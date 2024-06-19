@@ -15,6 +15,7 @@ const Index = () => {
   const [lowPassFilter, setLowPassFilter] = useState(0);
   const [highPassFilter, setHighPassFilter] = useState(0);
   const [compressor, setCompressor] = useState(0);
+  const [equalizerSettings, setEqualizerSettings] = useState({ bass: 0, mid: 0, treble: 0 });
   const toast = useToast();
 
   const handleStartRecording = () => {
@@ -55,6 +56,18 @@ const Index = () => {
   const handleSetLowPassFilter = (val) => setLowPassFilter(val);
   const handleSetHighPassFilter = (val) => setHighPassFilter(val);
   const handleSetCompressor = (val) => setCompressor(val);
+  const handleEqualizerChange = (type, value) => {
+    setEqualizerSettings((prevSettings) => ({ ...prevSettings, [type]: value }));
+  };
+  const handleSaveStreamedAudio = () => {
+    // Logic to save streamed audio
+    toast({
+      title: "Streamed audio saved.",
+      status: "success",
+      duration: 2000,
+      isClosable: true,
+    });
+  };
 
   const availableAudioSources = ["Microphone", "System Audio", "External Device"]; // Example options
 
@@ -126,6 +139,33 @@ const Index = () => {
             <SliderThumb />
           </Slider>
         </Box>
+        <Box>
+          <Text>Bass:</Text>
+          <Slider value={equalizerSettings.bass} onChange={(val) => handleEqualizerChange('bass', val)} min={-10} max={10}>
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+            <SliderThumb />
+          </Slider>
+        </Box>
+        <Box>
+          <Text>Mid:</Text>
+          <Slider value={equalizerSettings.mid} onChange={(val) => handleEqualizerChange('mid', val)} min={-10} max={10}>
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+            <SliderThumb />
+          </Slider>
+        </Box>
+        <Box>
+          <Text>Treble:</Text>
+          <Slider value={equalizerSettings.treble} onChange={(val) => handleEqualizerChange('treble', val)} min={-10} max={10}>
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+            <SliderThumb />
+          </Slider>
+        </Box>
         <Menu>
           <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
             Logs
@@ -139,6 +179,7 @@ const Index = () => {
         <Button colorScheme="teal">Split Audio File</Button>
         <Button colorScheme="teal">View Current Settings</Button>
         <Button colorScheme="gray">Exit</Button>
+        <Button onClick={handleSaveStreamedAudio} colorScheme="purple">Save Streamed Audio</Button>
       </VStack>
     </Container>
   );
