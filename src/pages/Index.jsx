@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { parse } from 'date-fns';
 import { useNavigate } from "react-router-dom";
 import { fetchAudioDevices, fetchSaveDirectory } from '../utils/serverUtils';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const Index = () => {
   console.log("Rendering Index component");
@@ -41,8 +42,12 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("Index component mounted");
     setVideoSource("http://localhost:3000/stream/streamed_audio.mp3");
     fetchAudioDevices().then(devices => setAvailableAudioSources(devices));
+    return () => {
+      console.log("Index component unmounted");
+    };
   }, []);
 
   const handleStartRecording = () => {
@@ -283,4 +288,10 @@ const Index = () => {
   }
 };
 
-export default Index;
+const IndexWithBoundary = () => (
+  <ErrorBoundary>
+    <Index />
+  </ErrorBoundary>
+);
+
+export default IndexWithBoundary;
