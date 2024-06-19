@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Container, VStack, Button, Text, Box, Select, Input, useToast, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Index = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -8,7 +10,7 @@ const Index = () => {
   const [audioSource, setAudioSource] = useState("");
   const [saveDirectory, setSaveDirectory] = useState("");
   const [recordingQuality, setRecordingQuality] = useState("High");
-  const [scheduledRecording, setScheduledRecording] = useState("");
+  const [scheduledRecording, setScheduledRecording] = useState(null);
   const toast = useToast();
 
   const handleStartRecording = () => {
@@ -44,7 +46,7 @@ const Index = () => {
   const handleSetAudioSource = (e) => setAudioSource(e.target.value);
   const handleSetSaveDirectory = (e) => setSaveDirectory(e.target.value);
   const handleSetRecordingQuality = (e) => setRecordingQuality(e.target.value);
-  const handleSetScheduledRecording = (e) => setScheduledRecording(e.target.value);
+  const handleSetScheduledRecording = (date) => setScheduledRecording(date);
 
   const availableAudioSources = ["Microphone", "System Audio", "External Device"]; // Example options
 
@@ -77,7 +79,13 @@ const Index = () => {
         </Box>
         <Box>
           <Text>Set Scheduled Recording:</Text>
-          <Input value={scheduledRecording} onChange={handleSetScheduledRecording} placeholder="Enter schedule" />
+          <DatePicker
+            selected={scheduledRecording}
+            onChange={handleSetScheduledRecording}
+            showTimeSelect
+            dateFormat="Pp"
+            placeholderText="Select date and time"
+          />
         </Box>
         <Menu>
           <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
