@@ -5,6 +5,7 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { parse } from 'date-fns';
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   console.log("Rendering Index component");
@@ -33,7 +34,9 @@ const Index = () => {
   });
   const [videoSource, setVideoSource] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
+  const [advancedSettings, setAdvancedSettings] = useState({});
   const toast = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setVideoSource("http://localhost:3000/stream/streamed_audio.mp3");
@@ -90,6 +93,40 @@ const Index = () => {
     } catch (error) {
       console.error("Invalid date format:", error);
     }
+  };
+
+  const handleViewCurrentSettings = () => {
+    navigate("/config");
+  };
+
+  const handleAudioSplitter = () => {
+    navigate("/audio-splitter");
+  };
+
+  const resetSettings = () => {
+    setIsRecording(false);
+    setVadEnabled(false);
+    setAudioSource("");
+    setSaveDirectory("");
+    setRecordingQuality("High");
+    setScheduledRecording(null);
+    setStreamPort(3000);
+    setLowPassFilter(0);
+    setHighPassFilter(0);
+    setCompressor(0);
+    setGraphicEQSettings({
+      60: 0,
+      170: 0,
+      310: 0,
+      600: 0,
+      1000: 0,
+      3000: 0,
+      6000: 0,
+      12000: 0,
+      14000: 0,
+      16000: 0,
+    });
+    setAdvancedSettings({});
   };
 
   const availableAudioSources = ["Microphone", "System Audio", "External Device"]; // Example options
@@ -205,9 +242,9 @@ const Index = () => {
               <MenuItem>Noise Gate</MenuItem>
             </MenuList>
           </Menu>
-          <Button colorScheme="teal">Split Audio File</Button>
-          <Button colorScheme="teal">View Current Settings</Button>
-          <Button colorScheme="gray">Exit</Button>
+          <Button onClick={handleViewCurrentSettings} colorScheme="teal">View Current Settings</Button>
+          <Button onClick={handleAudioSplitter} colorScheme="teal">Split Audio File</Button>
+          <Button onClick={resetSettings} colorScheme="gray">Reset Settings</Button>
           <Box>
             <Text>Audio Stream:</Text>
             <video controls>
