@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Container, VStack, Button, Text, Box, Select, Input, useToast, Menu, MenuButton, MenuList, MenuItem, Slider, SliderTrack, SliderFilledTrack, SliderThumb } from "@chakra-ui/react";
+import { useState, useToast } from "react";
+import { Container, VStack, Button, Text, Box, Select, Input, Menu, MenuButton, MenuList, MenuItem, Slider, SliderTrack, SliderFilledTrack, SliderThumb } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -59,15 +59,7 @@ const Index = () => {
   const handleEqualizerChange = (type, value) => {
     setEqualizerSettings((prevSettings) => ({ ...prevSettings, [type]: value }));
   };
-  const handleSaveStreamedAudio = () => {
-    // Logic to save streamed audio
-    toast({
-      title: "Streamed audio saved.",
-      status: "success",
-      duration: 2000,
-      isClosable: true,
-    });
-  };
+  
 
   const availableAudioSources = ["Microphone", "System Audio", "External Device"]; // Example options
 
@@ -190,7 +182,7 @@ const Index = () => {
         <Button colorScheme="teal">Split Audio File</Button>
         <Button colorScheme="teal">View Current Settings</Button>
         <Button colorScheme="gray">Exit</Button>
-        <Button onClick={handleSaveStreamedAudio} colorScheme="purple">Save Streamed Audio</Button>
+        
       </VStack>
     </Container>
   );
