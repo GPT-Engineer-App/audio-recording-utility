@@ -8,6 +8,7 @@ const { Server } = require('socket.io');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const AUDIO_DIR = path.join(__dirname, 'audio');
+const STREAMED_AUDIO_PATH = path.join(AUDIO_DIR, 'streamed_audio.mp3');
 
 app.use(express.json());
 
@@ -50,17 +51,6 @@ app.post('/split', (req, res) => {
     .catch((err) => res.status(500).send(err.message));
 });
 
-app.post('/save-stream', (req, res) => {
-  const { audioData } = req.body;
-  const filePath = path.join(AUDIO_DIR, 'streamed_audio.mp3');
-  fs.writeFile(filePath, audioData, 'base64', (err) => {
-    if (err) {
-      return res.status(500).send('Error saving audio');
-    }
-    res.status(200).send('Audio saved successfully');
-  });
-});
-
 // Socket.io setup for real-time streaming
 const server = createServer(app);
 const io = new Server(server);
@@ -80,6 +70,21 @@ io.on('connection', (socket) => {
   });
 });
 
+// Automatically save streamed audio data when the server starts
+const saveStreamedAudio = () => {
+  const audioStream = fs.createWriteStream(STREAMED_AUDIO_PATH, { flags: 'a' });
+  io.on('connection', (socket) => {
+    socket.on('audio-data', (data) => {
+      audioStream.write(Buffer.from(data, 'base64'), (err) => {
+        if (err) {
+          console.error('Error writing audio data:', err);
+        }
+      });
+    });
+  });
+};
+
 server.listen(PORT, 'localhost', () => {
   console.log(`Audio stream server is running on http://localhost:${PORT}`);
+  saveStreamedAudio();
 });
