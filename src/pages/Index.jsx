@@ -1,5 +1,5 @@
 import { useState, useToast } from "react";
-import { Container, VStack, Button, Text, Box, Select, Input, Menu, MenuButton, MenuList, MenuItem, Slider, SliderTrack, SliderFilledTrack, SliderThumb } from "@chakra-ui/react";
+import { Container, VStack, Button, Text, Box, Select, Input, Menu, MenuButton, MenuList, MenuItem, Slider, SliderTrack, SliderFilledTrack, SliderThumb, Collapse } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -16,6 +16,7 @@ const Index = () => {
   const [highPassFilter, setHighPassFilter] = useState(0);
   const [compressor, setCompressor] = useState(0);
   const [equalizerSettings, setEqualizerSettings] = useState({ bass: 0, mid: 0, treble: 0 });
+  const [showEQSettings, setShowEQSettings] = useState(false);
   const toast = useToast();
 
   const handleStartRecording = () => {
@@ -59,7 +60,6 @@ const Index = () => {
   const handleEqualizerChange = (type, value) => {
     setEqualizerSettings((prevSettings) => ({ ...prevSettings, [type]: value }));
   };
-  
 
   const availableAudioSources = ["Microphone", "System Audio", "External Device"]; // Example options
 
@@ -168,21 +168,18 @@ const Index = () => {
             <MenuItem>View Error Log</MenuItem>
           </MenuList>
         </Menu>
-        <Menu>
-          <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-            Main Menu
-          </MenuButton>
-          <MenuList>
-            <MenuItem>Low/High Pass Filters</MenuItem>
-            <MenuItem>Compressor</MenuItem>
-            <MenuItem>Noise Reduction</MenuItem>
-            <MenuItem>Noise Gate</MenuItem>
-          </MenuList>
-        </Menu>
+        <Button onClick={() => setShowEQSettings(!showEQSettings)} colorScheme="teal">EQ Settings</Button>
+        <Collapse in={showEQSettings} animateOpacity>
+          <Box p="4" mt="4" bg="gray.100" rounded="md" shadow="md">
+            <Text>Low/High Pass Filters</Text>
+            <Text>Compressor</Text>
+            <Text>Noise Reduction</Text>
+            <Text>Noise Gate</Text>
+          </Box>
+        </Collapse>
         <Button colorScheme="teal">Split Audio File</Button>
         <Button colorScheme="teal">View Current Settings</Button>
         <Button colorScheme="gray">Exit</Button>
-        
       </VStack>
     </Container>
   );
