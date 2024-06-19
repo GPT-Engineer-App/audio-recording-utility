@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useToast } from "@chakra-ui/react";
 import { Container, VStack, Button, Text, Box, Select, Input, Menu, MenuButton, MenuList, MenuItem, Slider, SliderTrack, SliderFilledTrack, SliderThumb } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
@@ -19,7 +19,12 @@ const Index = () => {
   const [highPassFilter, setHighPassFilter] = useState(0);
   const [compressor, setCompressor] = useState(0);
   const [equalizerSettings, setEqualizerSettings] = useState({ bass: 0, mid: 0, treble: 0 });
+  const [videoSource, setVideoSource] = useState("");
   const toast = useToast();
+
+  useEffect(() => {
+    setVideoSource("http://localhost:3000/stream/streamed_audio.mp3");
+  }, []);
 
   const handleStartRecording = () => {
     setIsRecording(true);
@@ -161,6 +166,21 @@ const Index = () => {
               <SliderThumb />
             </Slider>
           </Box>
+          <Box>
+            <Text>Equalizer Settings:</Text>
+            <Box>
+              <Text>Bass:</Text>
+              <Input type="number" value={equalizerSettings.bass} onChange={(e) => handleEqualizerChange('bass', parseInt(e.target.value))} />
+            </Box>
+            <Box>
+              <Text>Mid:</Text>
+              <Input type="number" value={equalizerSettings.mid} onChange={(e) => handleEqualizerChange('mid', parseInt(e.target.value))} />
+            </Box>
+            <Box>
+              <Text>Treble:</Text>
+              <Input type="number" value={equalizerSettings.treble} onChange={(e) => handleEqualizerChange('treble', parseInt(e.target.value))} />
+            </Box>
+          </Box>
           <Menu>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
               Logs
@@ -185,6 +205,13 @@ const Index = () => {
           <Button colorScheme="teal">Split Audio File</Button>
           <Button colorScheme="teal">View Current Settings</Button>
           <Button colorScheme="gray">Exit</Button>
+          <Box>
+            <Text>Audio Stream:</Text>
+            <video controls>
+              <source src={videoSource} type="audio/mp3" />
+              Your browser does not support the audio element.
+            </video>
+          </Box>
         </VStack>
       </Container>
     );
