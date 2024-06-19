@@ -176,6 +176,17 @@ const Index = () => {
             <MenuItem>View Error Log</MenuItem>
           </MenuList>
         </Menu>
+        <Menu>
+          <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+            Main Menu
+          </MenuButton>
+          <MenuList>
+            <MenuItem>Low/High Pass Filters</MenuItem>
+            <MenuItem>Compressor</MenuItem>
+            <MenuItem>Noise Reduction</MenuItem>
+            <MenuItem>Noise Gate</MenuItem>
+          </MenuList>
+        </Menu>
         <Button colorScheme="teal">Split Audio File</Button>
         <Button colorScheme="teal">View Current Settings</Button>
         <Button colorScheme="gray">Exit</Button>
