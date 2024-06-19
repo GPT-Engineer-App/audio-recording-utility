@@ -19,7 +19,18 @@ const Index = () => {
   const [lowPassFilter, setLowPassFilter] = useState(0);
   const [highPassFilter, setHighPassFilter] = useState(0);
   const [compressor, setCompressor] = useState(0);
-  const [equalizerSettings, setEqualizerSettings] = useState({ bass: 0, mid: 0, treble: 0 });
+  const [graphicEQSettings, setGraphicEQSettings] = useState({
+    60: 0,
+    170: 0,
+    310: 0,
+    600: 0,
+    1000: 0,
+    3000: 0,
+    6000: 0,
+    12000: 0,
+    14000: 0,
+    16000: 0,
+  });
   const [videoSource, setVideoSource] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
   const toast = useToast();
@@ -66,8 +77,8 @@ const Index = () => {
   const handleSetLowPassFilter = (val) => setLowPassFilter(val);
   const handleSetHighPassFilter = (val) => setHighPassFilter(val);
   const handleSetCompressor = (val) => setCompressor(val);
-  const handleEqualizerChange = (type, value) => {
-    setEqualizerSettings((prevSettings) => ({ ...prevSettings, [type]: value }));
+  const handleGraphicEQChange = (frequency, value) => {
+    setGraphicEQSettings((prevSettings) => ({ ...prevSettings, [frequency]: value }));
   };
 
   const handleDateTimeInputChange = (e) => {
@@ -155,46 +166,23 @@ const Index = () => {
             </Slider>
           </Box>
           <Box>
-            <Text>Bass:</Text>
-            <Slider value={equalizerSettings.bass} onChange={(val) => handleEqualizerChange('bass', val)} min={-10} max={10}>
-              <SliderTrack>
-                <SliderFilledTrack />
-              </SliderTrack>
-              <SliderThumb />
-            </Slider>
-          </Box>
-          <Box>
-            <Text>Mid:</Text>
-            <Slider value={equalizerSettings.mid} onChange={(val) => handleEqualizerChange('mid', val)} min={-10} max={10}>
-              <SliderTrack>
-                <SliderFilledTrack />
-              </SliderTrack>
-              <SliderThumb />
-            </Slider>
-          </Box>
-          <Box>
-            <Text>Treble:</Text>
-            <Slider value={equalizerSettings.treble} onChange={(val) => handleEqualizerChange('treble', val)} min={-10} max={10}>
-              <SliderTrack>
-                <SliderFilledTrack />
-              </SliderTrack>
-              <SliderThumb />
-            </Slider>
-          </Box>
-          <Box>
-            <Text>Equalizer Settings:</Text>
-            <Box>
-              <Text>Bass:</Text>
-              <Input type="number" value={equalizerSettings.bass} onChange={(e) => handleEqualizerChange('bass', parseInt(e.target.value))} />
-            </Box>
-            <Box>
-              <Text>Mid:</Text>
-              <Input type="number" value={equalizerSettings.mid} onChange={(e) => handleEqualizerChange('mid', parseInt(e.target.value))} />
-            </Box>
-            <Box>
-              <Text>Treble:</Text>
-              <Input type="number" value={equalizerSettings.treble} onChange={(e) => handleEqualizerChange('treble', parseInt(e.target.value))} />
-            </Box>
+            <Text>Graphic Equalizer:</Text>
+            {Object.keys(graphicEQSettings).map((frequency) => (
+              <Box key={frequency}>
+                <Text>{frequency} Hz:</Text>
+                <Slider
+                  value={graphicEQSettings[frequency]}
+                  onChange={(val) => handleGraphicEQChange(frequency, val)}
+                  min={-10}
+                  max={10}
+                >
+                  <SliderTrack>
+                    <SliderFilledTrack />
+                  </SliderTrack>
+                  <SliderThumb />
+                </Slider>
+              </Box>
+            ))}
           </Box>
           <Menu>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
