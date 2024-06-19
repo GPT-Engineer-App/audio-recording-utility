@@ -4,6 +4,7 @@ const path = require('path');
 const splitAudio = require('../utils/splitAudio');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
+const { exec } = require('child_process');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -49,6 +50,22 @@ app.post('/split', (req, res) => {
   splitAudio(inputFile, segmentDuration, outputDir)
     .then((message) => res.status(200).send(message))
     .catch((err) => res.status(500).send(err.message));
+});
+
+app.get('/api/audio-devices', (req, res) => {
+  exec('arecord -l', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error fetching audio devices: ${stderr}`);
+      return res.status(500).send('Error fetching audio devices');
+    }
+    const devices = stdout.split('\n').filter(line => line.includes('card')).map(line => line.trim());
+    res.json({ devices });
+  });
+});
+
+app.get('/api/save-directory', (req, res) => {
+  const saveDirectory = '/path/to/save/directory'; // Replace with actual logic to fetch save directory
+  res.json({ directory: saveDirectory });
 });
 
 // Socket.io setup for real-time streaming

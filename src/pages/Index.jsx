@@ -6,6 +6,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { parse } from 'date-fns';
 import { useNavigate } from "react-router-dom";
+import { fetchAudioDevices, fetchSaveDirectory } from '../utils/serverUtils';
 
 const Index = () => {
   console.log("Rendering Index component");
@@ -35,11 +36,13 @@ const Index = () => {
   const [videoSource, setVideoSource] = useState("");
   const [dateTimeInput, setDateTimeInput] = useState("");
   const [advancedSettings, setAdvancedSettings] = useState({});
+  const [availableAudioSources, setAvailableAudioSources] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
     setVideoSource("http://localhost:3000/stream/streamed_audio.mp3");
+    fetchAudioDevices().then(devices => setAvailableAudioSources(devices));
   }, []);
 
   const handleStartRecording = () => {
@@ -73,7 +76,6 @@ const Index = () => {
   };
 
   const handleSetAudioSource = (e) => setAudioSource(e.target.value);
-  const handleSetSaveDirectory = (e) => setSaveDirectory(e.target.value);
   const handleSetRecordingQuality = (e) => setRecordingQuality(e.target.value);
   const handleSetScheduledRecording = (date) => setScheduledRecording(date);
   const handleSetStreamPort = (e) => setStreamPort(e.target.value);
@@ -129,7 +131,10 @@ const Index = () => {
     setAdvancedSettings({});
   };
 
-  const availableAudioSources = ["Microphone", "System Audio", "External Device"]; // Example options
+  const handleSetSaveDirectory = async () => {
+    const directory = await fetchSaveDirectory();
+    setSaveDirectory(directory);
+  };
 
   try {
     return (
@@ -149,8 +154,8 @@ const Index = () => {
           </Box>
           <Box>
             <Text>Set Save Directory:</Text>
-            <Input type="file" webkitdirectory="true" value={saveDirectory} onChange={handleSetSaveDirectory} placeholder="Select save directory" />
-            <Input type="text" value={saveDirectory} onChange={handleSetSaveDirectory} placeholder="Enter save directory path" />
+            <Button onClick={handleSetSaveDirectory} colorScheme="teal">Select Save Directory</Button>
+            <Input type="text" value={saveDirectory} readOnly placeholder="Selected save directory" />
           </Box>
           <Box>
             <Text>Set Recording Quality:</Text>
