@@ -4,6 +4,7 @@ import { Container, VStack, Button, Text, Box, Select, Input, Menu, MenuButton, 
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { parse } from 'date-fns';
 
 const Index = () => {
   console.log("Rendering Index component");
@@ -20,6 +21,7 @@ const Index = () => {
   const [compressor, setCompressor] = useState(0);
   const [equalizerSettings, setEqualizerSettings] = useState({ bass: 0, mid: 0, treble: 0 });
   const [videoSource, setVideoSource] = useState("");
+  const [dateTimeInput, setDateTimeInput] = useState("");
   const toast = useToast();
 
   useEffect(() => {
@@ -68,6 +70,17 @@ const Index = () => {
     setEqualizerSettings((prevSettings) => ({ ...prevSettings, [type]: value }));
   };
 
+  const handleDateTimeInputChange = (e) => {
+    const input = e.target.value;
+    setDateTimeInput(input);
+    try {
+      const parsedDate = parse(input, "yyyy-MM-dd/h:mma", new Date());
+      setScheduledRecording(parsedDate);
+    } catch (error) {
+      console.error("Invalid date format:", error);
+    }
+  };
+
   const availableAudioSources = ["Microphone", "System Audio", "External Device"]; // Example options
 
   try {
@@ -89,6 +102,7 @@ const Index = () => {
           <Box>
             <Text>Set Save Directory:</Text>
             <Input type="file" webkitdirectory="true" value={saveDirectory} onChange={handleSetSaveDirectory} placeholder="Select save directory" />
+            <Input type="text" value={saveDirectory} onChange={handleSetSaveDirectory} placeholder="Enter save directory path" />
           </Box>
           <Box>
             <Text>Set Recording Quality:</Text>
@@ -107,6 +121,7 @@ const Index = () => {
               dateFormat="Pp"
               placeholderText="Select date and time"
             />
+            <Input type="text" value={dateTimeInput} onChange={handleDateTimeInputChange} placeholder="YYYY-MM-DD/HH:MMAM/PM" />
           </Box>
           <Box>
             <Text>Set Stream Port:</Text>
