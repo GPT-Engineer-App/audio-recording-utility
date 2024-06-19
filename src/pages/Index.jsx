@@ -278,6 +278,7 @@ const Index = () => {
     );
   } catch (error) {
     console.error("Error rendering Index component:", error);
+    console.error("Error details:", error);
     return <Text color="red.500">An error occurred while rendering the component.</Text>;
   }
 };

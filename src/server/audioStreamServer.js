@@ -12,6 +12,18 @@ const AUDIO_DIR = path.join(__dirname, 'audio');
 const STREAMED_AUDIO_PATH = path.join(AUDIO_DIR, 'streamed_audio.mp3');
 
 app.use(express.json());
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, AUDIO_DIR);
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  }
+});
+
+const upload = multer({ storage });
 
 app.get('/stream/:filename', (req, res) => {
   const filePath = path.join(AUDIO_DIR, req.params.filename);
@@ -43,11 +55,12 @@ app.get('/stream/:filename', (req, res) => {
   }
 });
 
-app.post('/split', (req, res) => {
-  const { inputFile, segmentDuration } = req.body;
+app.post('/split', upload.single('audioFile'), (req, res) => {
+  const { segmentLength } = req.body;
+  const inputFile = req.file.path;
   const outputDir = AUDIO_DIR;
 
-  splitAudio(inputFile, segmentDuration, outputDir)
+  splitAudio(inputFile, segmentLength, outputDir)
     .then((message) => res.status(200).send(message))
     .catch((err) => res.status(500).send(err.message));
 });
