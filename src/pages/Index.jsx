@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Container, VStack, Button, Text, Box, Select, Input, useToast } from "@chakra-ui/react";
+import { Container, VStack, Button, Text, Box, Select, Input, useToast, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 
 const Index = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -45,6 +46,8 @@ const Index = () => {
   const handleSetRecordingQuality = (e) => setRecordingQuality(e.target.value);
   const handleSetScheduledRecording = (e) => setScheduledRecording(e.target.value);
 
+  const availableAudioSources = ["Microphone", "System Audio", "External Device"]; // Example options
+
   return (
     <Container centerContent maxW="container.md" height="100vh" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
       <VStack spacing={4}>
@@ -54,11 +57,15 @@ const Index = () => {
         <Button onClick={handleToggleVAD} colorScheme="blue">{vadEnabled ? "Disable VAD" : "Enable VAD"}</Button>
         <Box>
           <Text>Set Audio Source:</Text>
-          <Input value={audioSource} onChange={handleSetAudioSource} placeholder="Enter audio source" />
+          <Select value={audioSource} onChange={handleSetAudioSource} placeholder="Select audio source">
+            {availableAudioSources.map((source, index) => (
+              <option key={index} value={source}>{source}</option>
+            ))}
+          </Select>
         </Box>
         <Box>
           <Text>Set Save Directory:</Text>
-          <Input value={saveDirectory} onChange={handleSetSaveDirectory} placeholder="Enter save directory" />
+          <Input type="file" webkitdirectory="true" value={saveDirectory} onChange={handleSetSaveDirectory} placeholder="Select save directory" />
         </Box>
         <Box>
           <Text>Set Recording Quality:</Text>
@@ -72,9 +79,16 @@ const Index = () => {
           <Text>Set Scheduled Recording:</Text>
           <Input value={scheduledRecording} onChange={handleSetScheduledRecording} placeholder="Enter schedule" />
         </Box>
-        <Button colorScheme="teal">View Logs</Button>
-        <Button colorScheme="teal">View Summary Log</Button>
-        <Button colorScheme="teal">View Error Log</Button>
+        <Menu>
+          <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+            Logs
+          </MenuButton>
+          <MenuList>
+            <MenuItem>View Logs</MenuItem>
+            <MenuItem>View Summary Log</MenuItem>
+            <MenuItem>View Error Log</MenuItem>
+          </MenuList>
+        </Menu>
         <Button colorScheme="teal">Split Audio File</Button>
         <Button colorScheme="teal">View Current Settings</Button>
         <Button colorScheme="gray">Exit</Button>
