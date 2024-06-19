@@ -50,12 +50,31 @@ app.post('/split', (req, res) => {
     .catch((err) => res.status(500).send(err.message));
 });
 
+app.post('/save-stream', (req, res) => {
+  const { audioData } = req.body;
+  const filePath = path.join(AUDIO_DIR, 'streamed_audio.mp3');
+  fs.writeFile(filePath, audioData, 'base64', (err) => {
+    if (err) {
+      return res.status(500).send('Error saving audio');
+    }
+    res.status(200).send('Audio saved successfully');
+  });
+});
+
 // Socket.io setup for real-time streaming
 const server = createServer(app);
 const io = new Server(server);
 
+const applyEqualizer = (audioStream, settings) => {
+  // Logic to apply equalizer settings to the audio stream
+};
+
 io.on('connection', (socket) => {
   console.log('a user connected');
+  socket.on('equalizer-settings', (settings) => {
+    // Apply equalizer settings to the audio stream
+    applyEqualizer(audioStream, settings);
+  });
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
