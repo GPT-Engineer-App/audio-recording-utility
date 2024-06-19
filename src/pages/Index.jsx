@@ -41,11 +41,13 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("Fetching audio devices and setting video source");
     setVideoSource("http://localhost:3000/stream/streamed_audio.mp3");
     fetchAudioDevices().then(devices => setAvailableAudioSources(devices));
   }, []);
 
   const handleStartRecording = () => {
+    console.log("Starting recording");
     setIsRecording(true);
     toast({
       title: "Recording started.",
@@ -56,6 +58,7 @@ const Index = () => {
   };
 
   const handleStopRecording = () => {
+    console.log("Stopping recording");
     setIsRecording(false);
     toast({
       title: "Recording stopped.",
@@ -66,6 +69,7 @@ const Index = () => {
   };
 
   const handleToggleVAD = () => {
+    console.log("Toggling VAD");
     setVadEnabled(!vadEnabled);
     toast({
       title: `Voice Activation Detection ${vadEnabled ? "disabled" : "enabled"}.`,
@@ -106,6 +110,7 @@ const Index = () => {
   };
 
   const resetSettings = () => {
+    console.log("Resetting settings");
     setIsRecording(false);
     setVadEnabled(false);
     setAudioSource("");
@@ -132,12 +137,13 @@ const Index = () => {
   };
 
   const handleSetSaveDirectory = async () => {
+    console.log("Setting save directory");
     const directory = await fetchSaveDirectory();
     setSaveDirectory(directory);
   };
 
-  try {
-    return (
+  return (
+    <ErrorBoundary>
       <Container centerContent maxW="container.md" height="100vh" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
         <Box as="header" w="100%" p={4} bg="teal.500" color="white" textAlign="center">
           <Heading as="h1" size="xl">Audio Recording Utility</Heading>
@@ -275,12 +281,32 @@ const Index = () => {
           <Text>&copy; 2023 Audio Recording Utility. All rights reserved.</Text>
         </Box>
       </Container>
-    );
-  } catch (error) {
-    console.error("Error rendering Index component:", error);
-    console.error("Error details:", error);
-    return <Text color="red.500">An error occurred while rendering the component.</Text>;
-  }
+    </ErrorBoundary>
+  );
 };
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    console.error("ErrorBoundary caught an error", error);
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("ErrorBoundary caught an error", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <Text color="red.500">An error occurred while rendering the component.</Text>;
+    }
+
+    return this.props.children; 
+  }
+}
 
 export default Index;
