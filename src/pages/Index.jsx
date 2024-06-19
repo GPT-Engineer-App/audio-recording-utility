@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Container, VStack, Button, Text, Box, Select, Input, useToast, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
+import { Container, VStack, Button, Text, Box, Select, Input, useToast, Menu, MenuButton, MenuList, MenuItem, Slider, SliderTrack, SliderFilledTrack, SliderThumb } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,6 +11,10 @@ const Index = () => {
   const [saveDirectory, setSaveDirectory] = useState("");
   const [recordingQuality, setRecordingQuality] = useState("High");
   const [scheduledRecording, setScheduledRecording] = useState(null);
+  const [streamPort, setStreamPort] = useState(3000);
+  const [lowPassFilter, setLowPassFilter] = useState(0);
+  const [highPassFilter, setHighPassFilter] = useState(0);
+  const [compressor, setCompressor] = useState(0);
   const toast = useToast();
 
   const handleStartRecording = () => {
@@ -47,6 +51,10 @@ const Index = () => {
   const handleSetSaveDirectory = (e) => setSaveDirectory(e.target.value);
   const handleSetRecordingQuality = (e) => setRecordingQuality(e.target.value);
   const handleSetScheduledRecording = (date) => setScheduledRecording(date);
+  const handleSetStreamPort = (e) => setStreamPort(e.target.value);
+  const handleSetLowPassFilter = (val) => setLowPassFilter(val);
+  const handleSetHighPassFilter = (val) => setHighPassFilter(val);
+  const handleSetCompressor = (val) => setCompressor(val);
 
   const availableAudioSources = ["Microphone", "System Audio", "External Device"]; // Example options
 
@@ -86,6 +94,37 @@ const Index = () => {
             dateFormat="Pp"
             placeholderText="Select date and time"
           />
+        </Box>
+        <Box>
+          <Text>Set Stream Port:</Text>
+          <Input type="number" value={streamPort} onChange={handleSetStreamPort} placeholder="Enter stream port" />
+        </Box>
+        <Box>
+          <Text>Low Pass Filter:</Text>
+          <Slider value={lowPassFilter} onChange={handleSetLowPassFilter} min={0} max={100}>
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+            <SliderThumb />
+          </Slider>
+        </Box>
+        <Box>
+          <Text>High Pass Filter:</Text>
+          <Slider value={highPassFilter} onChange={handleSetHighPassFilter} min={0} max={100}>
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+            <SliderThumb />
+          </Slider>
+        </Box>
+        <Box>
+          <Text>Compressor:</Text>
+          <Slider value={compressor} onChange={handleSetCompressor} min={0} max={100}>
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+            <SliderThumb />
+          </Slider>
         </Box>
         <Menu>
           <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>

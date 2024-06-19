@@ -2,9 +2,11 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const splitAudio = require('../utils/splitAudio');
+const { createServer } = require('http');
+const { Server } = require('socket.io');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const AUDIO_DIR = path.join(__dirname, 'audio');
 
 app.use(express.json());
@@ -48,6 +50,17 @@ app.post('/split', (req, res) => {
     .catch((err) => res.status(500).send(err.message));
 });
 
-app.listen(PORT, 'localhost', () => {
+// Socket.io setup for real-time streaming
+const server = createServer(app);
+const io = new Server(server);
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
+
+server.listen(PORT, 'localhost', () => {
   console.log(`Audio stream server is running on http://localhost:${PORT}`);
 });
