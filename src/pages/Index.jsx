@@ -44,7 +44,9 @@ const Index = () => {
   useEffect(() => {
     console.log("Index component mounted");
     setVideoSource("http://localhost:3000/stream/streamed_audio.mp3");
-    fetchAudioDevices().then(devices => setAvailableAudioSources(devices));
+    fetchAudioDevices()
+      .then(devices => setAvailableAudioSources(devices))
+      .catch(error => console.error('Error fetching audio devices:', error));
     return () => {
       console.log("Index component unmounted");
     };
@@ -137,8 +139,12 @@ const Index = () => {
   };
 
   const handleSetSaveDirectory = async () => {
-    const directory = await fetchSaveDirectory();
-    setSaveDirectory(directory);
+    try {
+      const directory = await fetchSaveDirectory();
+      setSaveDirectory(directory);
+    } catch (error) {
+      console.error('Error fetching save directory:', error);
+    }
   };
 
   try {
